@@ -1,0 +1,25 @@
+name: "Pheo Scan"
+description: >-
+  Classify every shell command your agent instructions ask for, and
+  fail when any of it can never run unattended.
+branding:
+  icon: shield
+  color: purple
+inputs:
+  path:
+    description: "Directory to scan"
+    default: "."
+  strict:
+    description: "Exit non-zero on never-graduating classes"
+    default: "true"
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        pip install --quiet pheo-oats
+        if [ "${{ inputs.strict }}" = "true" ]; then
+          oats scan "${{ inputs.path }}" --strict
+        else
+          oats scan "${{ inputs.path }}"
+        fi
